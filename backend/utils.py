@@ -4,7 +4,6 @@ from collections import defaultdict
 def find_free_slots(entries):
     timetable = defaultdict(list)
 
-    # group by day
     for entry in entries:
         timetable[entry.day].append(entry)
 
@@ -18,7 +17,6 @@ def find_free_slots(entries):
             end = datetime.strptime(entry.end_time, "%H:%M")
             time_blocks.append((start, end))
 
-        # sort classes
         time_blocks.sort(key=lambda x: x[0])
 
         free_slots = []
@@ -26,14 +24,12 @@ def find_free_slots(entries):
         day_start = datetime.strptime("09:00", "%H:%M")
         day_end = datetime.strptime("17:00", "%H:%M")
 
-        # gap before first class
         if time_blocks and time_blocks[0][0] > day_start:
             free_slots.append({
                 "start": day_start.strftime("%H:%M"),
                 "end": time_blocks[0][0].strftime("%H:%M")
             })
 
-        # gaps between classes
         for i in range(len(time_blocks) - 1):
             current_end = time_blocks[i][1]
             next_start = time_blocks[i + 1][0]
@@ -44,7 +40,6 @@ def find_free_slots(entries):
                     "end": next_start.strftime("%H:%M")
                 })
 
-        # gap after last class
         if time_blocks and time_blocks[-1][1] < day_end:
             free_slots.append({
                 "start": time_blocks[-1][1].strftime("%H:%M"),
